@@ -86,6 +86,9 @@
 			},
 			"FirstFolder": {
 				"type": "String"
+			},
+			"FoldersArray": {
+				"type": "Array"
 			}
 		},
 		"folder": {
