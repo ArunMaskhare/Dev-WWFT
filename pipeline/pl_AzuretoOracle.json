@@ -91,12 +91,6 @@
 			},
 			"pl_GDP_PARTIAL_DIR": {
 				"type": "string"
-			},
-			"pl_TARGET_TABLE": {
-				"type": "string"
-			},
-			"pl_AZURE_2_ORACLE_MAPPING": {
-				"type": "string"
 			}
 		},
 		"folder": {
