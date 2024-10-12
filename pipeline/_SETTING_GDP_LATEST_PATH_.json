@@ -170,14 +170,27 @@
 				"typeProperties": {
 					"ifFalseActivities": [
 						{
-							"name": "Set variable2",
+							"name": "Set latest GDP Path with date",
 							"type": "SetVariable",
 							"dependsOn": [],
 							"policy": {
 								"secureOutput": false,
 								"secureInput": false
 							},
-							"userProperties": []
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "pipelineReturnValue",
+								"value": [
+									{
+										"key": "GDP_LATEST_PATH",
+										"value": {
+											"type": "Expression",
+											"content": "@concat(pipeline().parameters.pl_GDP_DIR, '/', pipeline().parameters.pl_GDP_PARTIAL_DIR, '=', \nsubstring(string(variables('MaxFolderDate')), 0, 4), '-',\nsubstring(string(variables('MaxFolderDate')), 4, 2), '-',\nsubstring(string(variables('MaxFolderDate')), 6, 2))"
+										}
+									}
+								],
+								"setSystemVariable": true
+							}
 						}
 					],
 					"ifTrueActivities": [
