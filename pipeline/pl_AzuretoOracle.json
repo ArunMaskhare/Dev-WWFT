@@ -24,7 +24,7 @@
 								"type": "Expression"
 							},
 							"ds_GDP_FILE_DIR": {
-								"value": "@pipeline().parameters.pl_GDP_FILE_DIR",
+								"value": "@pipeline().parameters.pl_GDP_DIR",
 								"type": "Expression"
 							}
 						}
@@ -48,9 +48,18 @@
 				"type": "string",
 				"defaultValue": "dev-source-data"
 			},
-			"pl_GDP_FILE_DIR": {
+			"pl_GDP_DIR": {
 				"type": "string",
 				"defaultValue": "EBX_COUNTRY_LIST"
+			},
+			"pl_GDP_PARTIAL_DIR": {
+				"type": "string"
+			},
+			"pl_TARGET_TABLE": {
+				"type": "string"
+			},
+			"pl_AZURE_2_ORACLE_MAPPING": {
+				"type": "string"
 			}
 		},
 		"folder": {
