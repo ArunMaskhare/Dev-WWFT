@@ -17,6 +17,23 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "Folders into Array",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Filter_Folders",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": []
 			}
 		],
 		"parameters": {
@@ -30,6 +47,23 @@
 			"pl_GDP_PARTIAL_DIR": {
 				"type": "string",
 				"defaultValue": "EDL_LOAD_DT"
+			}
+		},
+		"variables": {
+			"FoldersIntoArray": {
+				"type": "Array"
+			},
+			"FoldersArray": {
+				"type": "String"
+			},
+			"FirstFolder": {
+				"type": "String"
+			},
+			"FolderIsInNumberFormat": {
+				"type": "Boolean"
+			},
+			"MaxFolderDate": {
+				"type": "Integer"
 			}
 		},
 		"folder": {
