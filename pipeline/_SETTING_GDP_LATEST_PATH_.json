@@ -148,6 +148,64 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "If Folder has Date In Number Format",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Folder Is Number Format",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Max Folder Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"ifFalseActivities": [
+						{
+							"name": "Set variable2",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": []
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Set GDP Latest path with Number Format",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "pipelineReturnValue",
+								"value": [
+									{
+										"key": "GDP_LATEST_PATH",
+										"value": {
+											"type": "Expression",
+											"content": "@concat(pipeline().parameters.pl_GDP_DIR, '/', pipeline().parameters.pl_GDP_PARTIAL_DIR, '=', variables('MaxFolderDate'))"
+										}
+									}
+								],
+								"setSystemVariable": true
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
