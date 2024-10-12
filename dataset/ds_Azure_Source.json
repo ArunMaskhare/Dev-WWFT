@@ -24,11 +24,11 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"folderPath": {
-					"value": "@dataset().GDP_FILE_DIR",
+					"value": "@dataset().ds_GDP_FILE_DIR",
 					"type": "Expression"
 				},
 				"container": {
-					"value": "@dataset().CONTAINER_NAME",
+					"value": "@dataset().ds_CONTAINER_NAME",
 					"type": "Expression"
 				}
 			},
