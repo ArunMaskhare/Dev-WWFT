@@ -2,11 +2,28 @@
 	"name": "ls_Oracle_target",
 	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
+		"parameters": {
+			"TARGET_HOST": {
+				"type": "String"
+			},
+			"TARGET_PORT": {
+				"type": "String"
+			},
+			"TARGET_SID": {
+				"type": "String"
+			},
+			"TARGET_USER": {
+				"type": "String"
+			},
+			"TARGET_PWD": {
+				"type": "String"
+			}
+		},
 		"annotations": [],
 		"type": "Oracle",
 		"typeProperties": {
 			"connectionString": "host=localhost;port=1521;sid=orcl;user id=WWFT_DEV",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI0ZDIxN2Y3NS1lMjVhLTQzYWEtYTA0Yy1mYjU0MTI0ZjMyMTkiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIxZjExOWVjOS1iYWU4LTQ3NmItYjc4NS0wMDI5Mjc0MjExYTEiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "IR-selfhosted-wwft-dev",
