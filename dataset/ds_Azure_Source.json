@@ -6,11 +6,11 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"CONTAINER_NAME": {
+			"ds_CONTAINER_NAME": {
 				"type": "String",
 				"defaultValue": "dev-source-data"
 			},
-			"GDP_FILE_DIR": {
+			"ds_GDP_FILE_DIR": {
 				"type": "String",
 				"defaultValue": "EBX_COUNTRY_LIST"
 			}
