@@ -181,102 +181,143 @@
 				"defaultValue": {
 					"mappings": [
 						{
-							"source": {
-								"name": "Customer_Index"
-							},
 							"sink": {
-								"name": "Customer_Index"
+								"name": "Customer_Index",
+								"type": "Decimal"
+							},
+							"source": {
+								"name": "Customer_Index",
+								"physicalType": "Decimal",
+								"precision": 38,
+								"scale": 18,
+								"type": "Decimal"
 							}
 						},
 						{
-							"source": {
-								"name": "Customer_Id"
-							},
 							"sink": {
-								"name": "Customer_Id"
+								"name": "Customer_Id",
+								"type": "Decimal"
+							},
+							"source": {
+								"name": "Customer_Id",
+								"physicalType": "Decimal",
+								"precision": 38,
+								"scale": 18,
+								"type": "Decimal"
 							}
 						},
 						{
-							"source": {
-								"name": "First_Name"
-							},
 							"sink": {
-								"name": "First_Name"
+								"name": "First_Name",
+								"type": "String"
+							},
+							"source": {
+								"name": "First_Name",
+								"physicalType": "UTF8",
+								"type": "String"
 							}
 						},
 						{
-							"source": {
-								"name": "Last_Name"
-							},
 							"sink": {
-								"name": "Last_Name"
+								"name": "Last_Name",
+								"type": "String"
+							},
+							"source": {
+								"name": "Last_Name",
+								"physicalType": "UTF8",
+								"type": "String"
 							}
 						},
 						{
-							"source": {
-								"name": "Company"
-							},
 							"sink": {
-								"name": "Company"
+								"name": "Company",
+								"type": "String"
+							},
+							"source": {
+								"name": "Company",
+								"physicalType": "UTF8",
+								"type": "String"
 							}
 						},
 						{
-							"source": {
-								"name": "City"
-							},
 							"sink": {
-								"name": "City"
+								"name": "City",
+								"type": "String"
+							},
+							"source": {
+								"name": "City",
+								"physicalType": "UTF8",
+								"type": "String"
 							}
 						},
 						{
-							"source": {
-								"name": "Country"
-							},
 							"sink": {
-								"name": "Country"
+								"name": "Country",
+								"type": "String"
+							},
+							"source": {
+								"name": "Country",
+								"physicalType": "UTF8",
+								"type": "String"
 							}
 						},
 						{
-							"source": {
-								"name": "Phone_1"
-							},
 							"sink": {
-								"name": "Phone_1"
+								"name": "Phone_1",
+								"type": "String"
+							},
+							"source": {
+								"name": "Phone_1",
+								"physicalType": "UTF8",
+								"type": "String"
 							}
 						},
 						{
-							"source": {
-								"name": "Phone_2"
-							},
 							"sink": {
-								"name": "Phone_2"
+								"name": "Phone_2",
+								"type": "String"
+							},
+							"source": {
+								"name": "Phone_2",
+								"physicalType": "UTF8",
+								"type": "String"
 							}
 						},
 						{
-							"source": {
-								"name": "Email"
-							},
 							"sink": {
-								"name": "Email"
+								"name": "Email",
+								"type": "String"
+							},
+							"source": {
+								"name": "Email",
+								"physicalType": "UTF8",
+								"type": "String"
 							}
 						},
 						{
-							"source": {
-								"name": "Subscription_Date"
-							},
 							"sink": {
-								"name": "Subscription_Date"
+								"name": "Subscription_Date",
+								"type": "DateTime"
+							},
+							"source": {
+								"name": "Subscription_Date",
+								"physicalType": "INT96",
+								"type": "DateTime"
 							}
 						},
 						{
-							"source": {
-								"name": "Website"
-							},
 							"sink": {
-								"name": "Website"
+								"name": "Website",
+								"type": "String"
+							},
+							"source": {
+								"name": "Website",
+								"physicalType": "UTF8",
+								"type": "String"
 							}
 						}
-					]
+					],
+					"type": "TabularTranslator"
 				}
 			}
 		},
