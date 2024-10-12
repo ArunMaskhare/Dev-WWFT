@@ -33,7 +33,38 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "FoldersIntoArray",
+					"value": {
+						"value": "@activity('Filter_Folders').output.value",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "First Folder",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Folders into Array",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "FirstFolder",
+					"value": {
+						"value": "@split(string(variables('FoldersArray')[0]), '=')[1]",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
