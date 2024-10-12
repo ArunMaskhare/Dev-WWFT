@@ -1,0 +1,42 @@
+{
+	"name": "ds_Oracle_Target",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_Oracle_target",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"TARGET_HOST": "localhost",
+				"TARGET_PORT": "1521",
+				"TARGET_SID": "orcl",
+				"TARGET_USER": "WWFT_DEV",
+				"TARGET_PWD": "oracle123"
+			}
+		},
+		"parameters": {
+			"TARGET_SCHEMA": {
+				"type": "String",
+				"defaultValue": "WWFT_DEV"
+			},
+			"TARGET_TABLE": {
+				"type": "String",
+				"defaultValue": "CUSTOMERS"
+			}
+		},
+		"folder": {
+			"name": "Dataset"
+		},
+		"annotations": [],
+		"type": "OracleTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().TARGET_SCHEMA",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().TARGET_TABLE",
+				"type": "Expression"
+			}
+		}
+	}
+}
