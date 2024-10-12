@@ -168,6 +168,10 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"expression": {
+						"value": "@variables('FolderIsNumberFormat')",
+						"type": "Expression"
+					},
 					"ifFalseActivities": [
 						{
 							"name": "Set latest GDP Path with date",
