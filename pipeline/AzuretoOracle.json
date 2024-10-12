@@ -1,0 +1,9 @@
+{
+	"name": "AzuretoOracle",
+	"properties": {
+		"folder": {
+			"name": "Pipeline"
+		},
+		"annotations": []
+	}
+}
