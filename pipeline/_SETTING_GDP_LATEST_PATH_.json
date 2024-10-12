@@ -1,6 +1,27 @@
 {
 	"name": "_SETTING_GDP_LATEST_PATH_",
 	"properties": {
+		"activities": [
+			{
+				"name": "Filter_Folders",
+				"type": "Filter",
+				"dependsOn": [],
+				"userProperties": []
+			}
+		],
+		"parameters": {
+			"pl_GDP_DIR": {
+				"type": "string",
+				"defaultValue": "EBX_COUNTRY_LIST"
+			},
+			"pl_GDP_SUB_DIR": {
+				"type": "string"
+			},
+			"pl_GDP_PARTIAL_DIR": {
+				"type": "string",
+				"defaultValue": "EDL_LOAD_DT"
+			}
+		},
 		"folder": {
 			"name": "Pipeline"
 		},
