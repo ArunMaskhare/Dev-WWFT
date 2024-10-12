@@ -84,17 +84,8 @@
 			"FoldersIntoArray": {
 				"type": "Array"
 			},
-			"FoldersArray": {
-				"type": "String"
-			},
 			"FirstFolder": {
 				"type": "String"
-			},
-			"FolderIsInNumberFormat": {
-				"type": "Boolean"
-			},
-			"MaxFolderDate": {
-				"type": "Integer"
 			}
 		},
 		"folder": {
