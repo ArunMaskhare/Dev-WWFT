@@ -89,6 +89,36 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "Loop To Get Int Array of Folders",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Filter_Folders",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"activities": [
+						{
+							"name": "Append all folders into an Array of Integer",
+							"type": "AppendVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "FolderIntArray",
+								"value": {
+									"value": "@int(replace(replace(item().name, concat(pipeline().parameters.pl_GDP_PARTIAL_DIR, '='), ''), '-', ''))",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
@@ -113,6 +143,9 @@
 			},
 			"FolderIsNumberFormat": {
 				"type": "Boolean"
+			},
+			"FolderIntArray": {
+				"type": "Array"
 			}
 		},
 		"folder": {
