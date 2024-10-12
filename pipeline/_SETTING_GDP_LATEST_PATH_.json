@@ -104,7 +104,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Filter_Folders').output",
+						"value": "@activity('Filter_Folders').output.value",
 						"type": "Expression"
 					},
 					"isSequential": true,
@@ -117,36 +117,12 @@
 							"typeProperties": {
 								"variableName": "FolderIntArray",
 								"value": {
-									"value": "@item()",
+									"value": "@int(replace(replace(item().name, concat(pipeline().parameters.pl_GDP_PARTIAL_DIR, '='), '' ), '-', '' ))",
 									"type": "Expression"
 								}
 							}
 						}
 					]
-				}
-			},
-			{
-				"name": "Max Folder Date",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Loop To Get Int Array of Folders",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "MaxFolderDate",
-					"value": {
-						"value": "@max(variables('FolderIntArray'))",
-						"type": "Expression"
-					}
 				}
 			}
 		],
@@ -175,9 +151,6 @@
 			},
 			"FolderIntArray": {
 				"type": "Array"
-			},
-			"MaxFolderDate": {
-				"type": "Integer"
 			}
 		},
 		"folder": {
