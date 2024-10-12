@@ -117,7 +117,7 @@
 							"typeProperties": {
 								"variableName": "FolderIntArray",
 								"value": {
-									"value": "@int(replace(replace(item().name, concat(pipeline().parameters.pl_GDP_PARTIAL_DIR, '='), ''), '-', ''))",
+									"value": "item().name",
 									"type": "Expression"
 								}
 							}
