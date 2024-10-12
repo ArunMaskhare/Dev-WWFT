@@ -6,7 +6,17 @@
 				"name": "Filter_Folders",
 				"type": "Filter",
 				"dependsOn": [],
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.pl_GDP_SUB_DIR",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@and(\n    equals(item().type, 'Folder' )\n    ,\n    contains(item().name, concat(pipeline().parameters.pl_GDP_PARTIAL_DIR, '=' ))\n    )",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -15,7 +25,7 @@
 				"defaultValue": "EBX_COUNTRY_LIST"
 			},
 			"pl_GDP_SUB_DIR": {
-				"type": "string"
+				"type": "array"
 			},
 			"pl_GDP_PARTIAL_DIR": {
 				"type": "string",
