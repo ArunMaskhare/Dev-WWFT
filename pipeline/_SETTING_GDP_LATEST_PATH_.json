@@ -104,7 +104,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@variables('FoldersArray')",
+						"value": "@activity('Filter_Folders').output",
 						"type": "Expression"
 					},
 					"isSequential": true,
