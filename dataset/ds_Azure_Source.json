@@ -1,0 +1,40 @@
+{
+	"name": "ds_Azure_Source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_AzureBlobStorage_source",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"CONTAINER_NAME": {
+				"type": "String"
+			},
+			"GDP_FILE_DIR": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Dataset"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": {
+					"value": "@dataset().GDP_FILE_DIR",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().CONTAINER_NAME",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
