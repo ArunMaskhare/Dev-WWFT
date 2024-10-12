@@ -196,14 +196,12 @@
 						{
 							"sink": {
 								"name": "Customer_Id",
-								"type": "Decimal"
+								"type": "String"
 							},
 							"source": {
 								"name": "Customer_Id",
-								"physicalType": "Decimal",
-								"precision": 38,
-								"scale": 18,
-								"type": "Decimal"
+								"physicalType": "UTF8",
+								"type": "String"
 							}
 						},
 						{
