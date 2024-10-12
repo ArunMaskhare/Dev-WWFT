@@ -65,6 +65,30 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "Folder Is Number Format",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "First Folder",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "FolderIsNumberFormat",
+					"value": {
+						"value": "@equals(variables('FirstFolder'), replace(variables('FirstFolder'), '-', '' ))",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -86,6 +110,9 @@
 			},
 			"FoldersArray": {
 				"type": "Array"
+			},
+			"FolderIsNumberFormat": {
+				"type": "Boolean"
 			}
 		},
 		"folder": {
