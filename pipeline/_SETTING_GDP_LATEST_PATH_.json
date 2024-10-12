@@ -35,7 +35,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "FoldersIntoArray",
+					"variableName": "FoldersArray",
 					"value": {
 						"value": "@activity('Filter_Folders').output.value",
 						"type": "Expression"
@@ -81,9 +81,6 @@
 			}
 		},
 		"variables": {
-			"FoldersIntoArray": {
-				"type": "Array"
-			},
 			"FirstFolder": {
 				"type": "String"
 			},
