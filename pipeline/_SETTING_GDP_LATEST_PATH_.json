@@ -103,6 +103,11 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"items": {
+						"value": "@activity('Filter_Folders').output",
+						"type": "Expression"
+					},
+					"isSequential": true,
 					"activities": [
 						{
 							"name": "Append all folders into an Array of Integer",
@@ -118,6 +123,30 @@
 							}
 						}
 					]
+				}
+			},
+			{
+				"name": "Max Folder Date",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Loop To Get Int Array of Folders",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "MaxFolderDate",
+					"value": {
+						"value": "@max(variables('FolderIntArray'))",
+						"type": "Expression"
+					}
 				}
 			}
 		],
@@ -146,6 +175,9 @@
 			},
 			"FolderIntArray": {
 				"type": "Array"
+			},
+			"MaxFolderDate": {
+				"type": "Integer"
 			}
 		},
 		"folder": {
