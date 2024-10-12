@@ -3,23 +3,23 @@
 	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"parameters": {
-			"TARGET_HOST": {
+			"ls_TARGET_HOST": {
 				"type": "String",
 				"defaultValue": "localhost"
 			},
-			"TARGET_PORT": {
+			"ls_TARGET_PORT": {
 				"type": "String",
 				"defaultValue": "1521"
 			},
-			"TARGET_SID": {
+			"ls_TARGET_SID": {
 				"type": "String",
 				"defaultValue": "orcl"
 			},
-			"TARGET_USER": {
+			"ls_TARGET_USER": {
 				"type": "String",
 				"defaultValue": "WWFT_DEV"
 			},
-			"TARGET_PWD": {
+			"ls_TARGET_PWD": {
 				"type": "String",
 				"defaultValue": "oracle123"
 			}
@@ -27,7 +27,7 @@
 		"annotations": [],
 		"type": "Oracle",
 		"typeProperties": {
-			"connectionString": "host=@{linkedService().TARGET_HOST};port=@{linkedService().TARGET_PORT};sid=@{linkedService().TARGET_SID};user id=@{linkedService().TARGET_USER};Password=@{linkedService().TARGET_PWD}"
+			"connectionString": "host=@{linkedService().ls_TARGET_HOST};port=@{linkedService().ls_TARGET_PORT};sid=@{linkedService().ls_TARGET_SID};user id=@{linkedService().ls_TARGET_USER};Password=@{linkedService().ls_TARGET_PWD}"
 		},
 		"connectVia": {
 			"referenceName": "IR-selfhosted-wwft-dev",
