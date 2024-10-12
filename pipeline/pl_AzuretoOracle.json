@@ -120,7 +120,15 @@
 							"type": "DelimitedTextReadSettings"
 						}
 					},
-					"enableStaging": false
+					"sink": {
+						"type": "OracleSink",
+						"writeBatchSize": 10000
+					},
+					"enableStaging": false,
+					"translator": {
+						"value": "@json(string(pipeline().parameters.pl_AZURE_TO_ORACLE_MAPPING))",
+						"type": "Expression"
+					}
 				},
 				"inputs": [
 					{
@@ -137,13 +145,28 @@
 							}
 						}
 					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_Oracle_Target",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_TARGET_SCHEMA": "WWFT_DEV",
+							"ds_TARGET_TABLE": "CUSTOMERS",
+							"ds_TARGET_SID": "orcl",
+							"ds_TARGET_USER": "WWFT_DEV",
+							"ds_TARGET_PWD": "oracle123",
+							"ds_TARGET_HOST": "localhost",
+							"ds_TARGET_PORT": "1521"
+						}
+					}
 				]
 			}
 		],
 		"parameters": {
 			"pl_CONTAINER_NAME": {
 				"type": "string",
-				"defaultValue": "dev-source-data"
+				"defaultValue": "dev-source-data/"
 			},
 			"pl_GDP_DIR": {
 				"type": "string",
@@ -152,6 +175,109 @@
 			"pl_GDP_PARTIAL_DIR": {
 				"type": "string",
 				"defaultValue": "EDL_LOAD_DT"
+			},
+			"pl_AZURE_TO_ORACLE_MAPPING": {
+				"type": "string",
+				"defaultValue": {
+					"mappings": [
+						{
+							"source": {
+								"name": "Customer_Index"
+							},
+							"sink": {
+								"name": "Customer_Index"
+							}
+						},
+						{
+							"source": {
+								"name": "Customer_Id"
+							},
+							"sink": {
+								"name": "Customer_Id"
+							}
+						},
+						{
+							"source": {
+								"name": "First_Name"
+							},
+							"sink": {
+								"name": "First_Name"
+							}
+						},
+						{
+							"source": {
+								"name": "Last_Name"
+							},
+							"sink": {
+								"name": "Last_Name"
+							}
+						},
+						{
+							"source": {
+								"name": "Company"
+							},
+							"sink": {
+								"name": "Company"
+							}
+						},
+						{
+							"source": {
+								"name": "City"
+							},
+							"sink": {
+								"name": "City"
+							}
+						},
+						{
+							"source": {
+								"name": "Country"
+							},
+							"sink": {
+								"name": "Country"
+							}
+						},
+						{
+							"source": {
+								"name": "Phone_1"
+							},
+							"sink": {
+								"name": "Phone_1"
+							}
+						},
+						{
+							"source": {
+								"name": "Phone_2"
+							},
+							"sink": {
+								"name": "Phone_2"
+							}
+						},
+						{
+							"source": {
+								"name": "Email"
+							},
+							"sink": {
+								"name": "Email"
+							}
+						},
+						{
+							"source": {
+								"name": "Subscription_Date"
+							},
+							"sink": {
+								"name": "Subscription_Date"
+							}
+						},
+						{
+							"source": {
+								"name": "Website"
+							},
+							"sink": {
+								"name": "Website"
+							}
+						}
+					]
+				}
 			}
 		},
 		"folder": {
