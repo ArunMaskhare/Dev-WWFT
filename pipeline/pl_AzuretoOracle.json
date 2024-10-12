@@ -79,6 +79,65 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "AzuretoOracle",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "_SETTING_GDP_LATEST_PATH_",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": {
+								"value": "@activity('_SETTING_GDP_LATEST_PATH_').output.pipelineReturnValue.GDP_LATEST_PATH",
+								"type": "Expression"
+							},
+							"wildcardFileName": "*.csv",
+							"enablePartitionDiscovery": true,
+							"partitionRootPath": {
+								"value": "@concat(pipeline().parameters.pl_CONTAINER_NAME, pipeline().parameters.pl_GDP_DIR)",
+								"type": "Expression"
+							}
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_Azure_Source",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_CONTAINER_NAME": {
+								"value": "@pipeline().parameters.pl_CONTAINER_NAME",
+								"type": "Expression"
+							},
+							"ds_GDP_FILE_DIR": {
+								"value": "@pipeline().parameters.pl_GDP_DIR",
+								"type": "Expression"
+							}
+						}
+					}
+				]
 			}
 		],
 		"parameters": {
