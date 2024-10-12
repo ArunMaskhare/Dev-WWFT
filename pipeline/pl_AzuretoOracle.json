@@ -41,6 +41,43 @@
 						"type": "DelimitedTextReadSettings"
 					}
 				}
+			},
+			{
+				"name": "_SETTING_GDP_LATEST_PATH_",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "GET_GDP_FOLDERS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "_SETTING_GDP_LATEST_PATH_",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"pl_GDP_DIR": {
+							"value": "@pipeline().parameters.pl_GDP_DIR",
+							"type": "Expression"
+						},
+						"pl_GDP_SUB_DIR": {
+							"value": "@activity('GET_GDP_FOLDERS').output.childItems",
+							"type": "Expression"
+						},
+						"pl_GDP_PARTIAL_DIR": {
+							"value": "@pipeline().parameters.pl_GDP_PARTIAL_DIR",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"parameters": {
