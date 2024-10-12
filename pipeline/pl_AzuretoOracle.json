@@ -90,7 +90,8 @@
 				"defaultValue": "EBX_COUNTRY_LIST"
 			},
 			"pl_GDP_PARTIAL_DIR": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "EDL_LOAD_DT"
 			}
 		},
 		"folder": {
