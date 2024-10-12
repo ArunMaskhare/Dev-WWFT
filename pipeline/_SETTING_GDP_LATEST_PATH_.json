@@ -124,6 +124,30 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Max Folder Date",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Loop To Get Int Array of Folders",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "MaxFolderDate",
+					"value": {
+						"value": "@max(variables('FolderIntArray'))",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -151,6 +175,9 @@
 			},
 			"FolderIntArray": {
 				"type": "Array"
+			},
+			"MaxFolderDate": {
+				"type": "Integer"
 			}
 		},
 		"folder": {
