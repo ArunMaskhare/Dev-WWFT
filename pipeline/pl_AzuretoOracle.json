@@ -87,7 +87,7 @@
 			},
 			"pl_GDP_DIR": {
 				"type": "string",
-				"defaultValue": "EBX_COUNTRY_LIST"
+				"defaultValue": "EBX_COUNTRY_LIST/data/"
 			},
 			"pl_GDP_PARTIAL_DIR": {
 				"type": "string",
