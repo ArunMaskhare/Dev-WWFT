@@ -4,26 +4,30 @@
 	"properties": {
 		"parameters": {
 			"TARGET_HOST": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "localhost"
 			},
 			"TARGET_PORT": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "1521"
 			},
 			"TARGET_SID": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "orcl"
 			},
 			"TARGET_USER": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "WWFT_DEV"
 			},
 			"TARGET_PWD": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "oracle123"
 			}
 		},
 		"annotations": [],
 		"type": "Oracle",
 		"typeProperties": {
-			"connectionString": "host=localhost;port=1521;sid=orcl;user id=WWFT_DEV",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIxZjExOWVjOS1iYWU4LTQ3NmItYjc4NS0wMDI5Mjc0MjExYTEiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"connectionString": "host=@{linkedService().TARGET_HOST};port=@{linkedService().TARGET_PORT};sid=@{linkedService().TARGET_SID};user id=@{linkedService().TARGET_USER};Password=@{linkedService().TARGET_PWD}"
 		},
 		"connectVia": {
 			"referenceName": "IR-selfhosted-wwft-dev",
