@@ -17,7 +17,17 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "ds_Azure_Source",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_CONTAINER_NAME": {
+								"value": "@pipeline().parameters.pl_CONTAINER_NAME",
+								"type": "Expression"
+							},
+							"ds_GDP_FILE_DIR": {
+								"value": "@pipeline().parameters.pl_GDP_FILE_DIR",
+								"type": "Expression"
+							}
+						}
 					},
 					"fieldList": [],
 					"storeSettings": {
@@ -30,6 +40,16 @@
 				}
 			}
 		],
+		"parameters": {
+			"pl_CONTAINER_NAME": {
+				"type": "string",
+				"defaultValue": "dev-source-data"
+			},
+			"pl_GDP_FILE_DIR": {
+				"type": "string",
+				"defaultValue": "EBX_COUNTRY_LIST"
+			}
+		},
 		"folder": {
 			"name": "Pipeline"
 		},
