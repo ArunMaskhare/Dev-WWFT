@@ -1,0 +1,9 @@
+{
+	"name": "df-dev-wwft",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "a0b05a1a-f3c5-4a8d-9526-f4bbc6989c22",
+		"tenantId": "1424d33e-1aa0-4f62-801d-7aba93b6485d"
+	}
+}
