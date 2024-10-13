@@ -1,0 +1,327 @@
+{
+	"name": "pl_AzuretoOracle",
+	"properties": {
+		"activities": [
+			{
+				"name": "GET_GDP_FOLDERS",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_Azure_Source",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_CONTAINER_NAME": {
+								"value": "@pipeline().parameters.pl_CONTAINER_NAME",
+								"type": "Expression"
+							},
+							"ds_GDP_FILE_DIR": {
+								"value": "@pipeline().parameters.pl_GDP_DIR",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"childItems",
+						"itemType"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "_SETTING_GDP_LATEST_PATH_",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "GET_GDP_FOLDERS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "_SETTING_GDP_LATEST_PATH_",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"pl_GDP_DIR": {
+							"value": "@pipeline().parameters.pl_GDP_DIR",
+							"type": "Expression"
+						},
+						"pl_GDP_SUB_DIR": {
+							"value": "@activity('GET_GDP_FOLDERS').output.childItems",
+							"type": "Expression"
+						},
+						"pl_GDP_PARTIAL_DIR": {
+							"value": "@pipeline().parameters.pl_GDP_PARTIAL_DIR",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "AzuretoOracle",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "_SETTING_GDP_LATEST_PATH_",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": {
+								"value": "@activity('_SETTING_GDP_LATEST_PATH_').output.pipelineReturnValue.GDP_LATEST_PATH",
+								"type": "Expression"
+							},
+							"wildcardFileName": "*.csv",
+							"enablePartitionDiscovery": true,
+							"partitionRootPath": {
+								"value": "@concat(pipeline().parameters.pl_CONTAINER_NAME, pipeline().parameters.pl_GDP_DIR)",
+								"type": "Expression"
+							}
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "OracleSink",
+						"writeBatchSize": 10000
+					},
+					"enableStaging": false,
+					"translator": {
+						"value": "@json(string(pipeline().parameters.pl_AZURE_TO_ORACLE_MAPPING))",
+						"type": "Expression"
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_Azure_Source",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_CONTAINER_NAME": {
+								"value": "@pipeline().parameters.pl_CONTAINER_NAME",
+								"type": "Expression"
+							},
+							"ds_GDP_FILE_DIR": {
+								"value": "@pipeline().parameters.pl_GDP_DIR",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_Oracle_Target",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_TARGET_SCHEMA": "WWFT_DEV",
+							"ds_TARGET_TABLE": "CUSTOMERS",
+							"ds_TARGET_SID": "orcl",
+							"ds_TARGET_USER": "WWFT_DEV",
+							"ds_TARGET_PWD": "oracle123",
+							"ds_TARGET_HOST": "localhost",
+							"ds_TARGET_PORT": "1521"
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"pl_CONTAINER_NAME": {
+				"type": "string",
+				"defaultValue": "dev-source-data/"
+			},
+			"pl_GDP_DIR": {
+				"type": "string",
+				"defaultValue": "EBX_COUNTRY_LIST/data/"
+			},
+			"pl_GDP_PARTIAL_DIR": {
+				"type": "string",
+				"defaultValue": "EDL_LOAD_DT"
+			},
+			"pl_AZURE_TO_ORACLE_MAPPING": {
+				"type": "string",
+				"defaultValue": {
+					"mappings": [
+						{
+							"sink": {
+								"name": "Customer_Index",
+								"type": "Decimal"
+							},
+							"source": {
+								"name": "Customer_Index",
+								"physicalType": "Decimal",
+								"precision": 38,
+								"scale": 18,
+								"type": "Decimal"
+							}
+						},
+						{
+							"sink": {
+								"name": "Customer_Id",
+								"type": "String"
+							},
+							"source": {
+								"name": "Customer_Id",
+								"physicalType": "UTF8",
+								"type": "String"
+							}
+						},
+						{
+							"sink": {
+								"name": "First_Name",
+								"type": "String"
+							},
+							"source": {
+								"name": "First_Name",
+								"physicalType": "UTF8",
+								"type": "String"
+							}
+						},
+						{
+							"sink": {
+								"name": "Last_Name",
+								"type": "String"
+							},
+							"source": {
+								"name": "Last_Name",
+								"physicalType": "UTF8",
+								"type": "String"
+							}
+						},
+						{
+							"sink": {
+								"name": "Company",
+								"type": "String"
+							},
+							"source": {
+								"name": "Company",
+								"physicalType": "UTF8",
+								"type": "String"
+							}
+						},
+						{
+							"sink": {
+								"name": "City",
+								"type": "String"
+							},
+							"source": {
+								"name": "City",
+								"physicalType": "UTF8",
+								"type": "String"
+							}
+						},
+						{
+							"sink": {
+								"name": "Country",
+								"type": "String"
+							},
+							"source": {
+								"name": "Country",
+								"physicalType": "UTF8",
+								"type": "String"
+							}
+						},
+						{
+							"sink": {
+								"name": "Phone_1",
+								"type": "String"
+							},
+							"source": {
+								"name": "Phone_1",
+								"physicalType": "UTF8",
+								"type": "String"
+							}
+						},
+						{
+							"sink": {
+								"name": "Phone_2",
+								"type": "String"
+							},
+							"source": {
+								"name": "Phone_2",
+								"physicalType": "UTF8",
+								"type": "String"
+							}
+						},
+						{
+							"sink": {
+								"name": "Email",
+								"type": "String"
+							},
+							"source": {
+								"name": "Email",
+								"physicalType": "UTF8",
+								"type": "String"
+							}
+						},
+						{
+							"sink": {
+								"name": "Subscription_Date",
+								"type": "DateTime"
+							},
+							"source": {
+								"name": "Subscription_Date",
+								"physicalType": "INT96",
+								"type": "DateTime"
+							}
+						},
+						{
+							"sink": {
+								"name": "Website",
+								"type": "String"
+							},
+							"source": {
+								"name": "Website",
+								"physicalType": "UTF8",
+								"type": "String"
+							}
+						}
+					],
+					"type": "TabularTranslator"
+				}
+			}
+		},
+		"folder": {
+			"name": "Pipeline"
+		},
+		"annotations": []
+	}
+}

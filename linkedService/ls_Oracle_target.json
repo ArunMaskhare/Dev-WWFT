@@ -2,11 +2,32 @@
 	"name": "ls_Oracle_target",
 	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
+		"parameters": {
+			"ls_TARGET_HOST": {
+				"type": "String",
+				"defaultValue": "localhost"
+			},
+			"ls_TARGET_PORT": {
+				"type": "String",
+				"defaultValue": "1521"
+			},
+			"ls_TARGET_SID": {
+				"type": "String",
+				"defaultValue": "orcl"
+			},
+			"ls_TARGET_USER": {
+				"type": "String",
+				"defaultValue": "WWFT_DEV"
+			},
+			"ls_TARGET_PWD": {
+				"type": "String",
+				"defaultValue": "oracle123"
+			}
+		},
 		"annotations": [],
 		"type": "Oracle",
 		"typeProperties": {
-			"connectionString": "host=localhost;port=1521;sid=orcl;user id=WWFT_DEV",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI0ZDIxN2Y3NS1lMjVhLTQzYWEtYTA0Yy1mYjU0MTI0ZjMyMTkiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"connectionString": "host=@{linkedService().ls_TARGET_HOST};port=@{linkedService().ls_TARGET_PORT};sid=@{linkedService().ls_TARGET_SID};user id=@{linkedService().ls_TARGET_USER};Password=@{linkedService().ls_TARGET_PWD}"
 		},
 		"connectVia": {
 			"referenceName": "IR-selfhosted-wwft-dev",

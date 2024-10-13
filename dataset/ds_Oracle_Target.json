@@ -1,0 +1,77 @@
+{
+	"name": "ds_Oracle_Target",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_Oracle_target",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"ls_TARGET_HOST": {
+					"value": "@dataset().ds_TARGET_HOST",
+					"type": "Expression"
+				},
+				"ls_TARGET_PORT": {
+					"value": "@dataset().ds_TARGET_PORT",
+					"type": "Expression"
+				},
+				"ls_TARGET_SID": {
+					"value": "@dataset().ds_TARGET_SID",
+					"type": "Expression"
+				},
+				"ls_TARGET_USER": {
+					"value": "@dataset().ds_TARGET_USER",
+					"type": "Expression"
+				},
+				"ls_TARGET_PWD": {
+					"value": "@dataset().ds_TARGET_PWD",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"ds_TARGET_SCHEMA": {
+				"type": "String",
+				"defaultValue": "WWFT_DEV"
+			},
+			"ds_TARGET_TABLE": {
+				"type": "String",
+				"defaultValue": "CUSTOMERS"
+			},
+			"ds_TARGET_SID": {
+				"type": "string",
+				"defaultValue": "orcl"
+			},
+			"ds_TARGET_USER": {
+				"type": "string",
+				"defaultValue": "WWFT_DEV"
+			},
+			"ds_TARGET_PWD": {
+				"type": "string",
+				"defaultValue": "oracle123"
+			},
+			"ds_TARGET_HOST": {
+				"type": "string",
+				"defaultValue": "localhost"
+			},
+			"ds_TARGET_PORT": {
+				"type": "string",
+				"defaultValue": "1521"
+			}
+		},
+		"folder": {
+			"name": "Dataset"
+		},
+		"annotations": [],
+		"type": "OracleTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().ds_TARGET_SCHEMA",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().ds_TARGET_TABLE",
+				"type": "Expression"
+			}
+		}
+	}
+}

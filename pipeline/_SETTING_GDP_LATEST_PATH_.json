@@ -1,0 +1,263 @@
+{
+	"name": "_SETTING_GDP_LATEST_PATH_",
+	"properties": {
+		"activities": [
+			{
+				"name": "Filter_Folders",
+				"type": "Filter",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.pl_GDP_SUB_DIR",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@and(\n    equals(item().type, 'Folder' )\n    ,\n    contains(item().name, concat(pipeline().parameters.pl_GDP_PARTIAL_DIR, '=' ))\n    )",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Folders into Array",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Filter_Folders",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "FoldersArray",
+					"value": {
+						"value": "@activity('Filter_Folders').output.value",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "First Folder",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Folders into Array",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "FirstFolder",
+					"value": {
+						"value": "@split(string(variables('FoldersArray')[0]), '=')[1]",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Folder Is Number Format",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "First Folder",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "FolderIsNumberFormat",
+					"value": {
+						"value": "@equals(variables('FirstFolder'), replace(variables('FirstFolder'), '-', '' ))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Loop To Get Int Array of Folders",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Filter_Folders",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Filter_Folders').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Append all folders into an Array of Integer",
+							"type": "AppendVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "FolderIntArray",
+								"value": {
+									"value": "@int(replace(replace(item().name, concat(pipeline().parameters.pl_GDP_PARTIAL_DIR, '='), '' ), '-', '' ))",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Max Folder Date",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Loop To Get Int Array of Folders",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "MaxFolderDate",
+					"value": {
+						"value": "@max(variables('FolderIntArray'))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "If Folder has Date In Number Format",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Folder Is Number Format",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Max Folder Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@variables('FolderIsNumberFormat')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Set latest GDP Path with date",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "pipelineReturnValue",
+								"value": [
+									{
+										"key": "GDP_LATEST_PATH",
+										"value": {
+											"type": "Expression",
+											"content": "@concat(pipeline().parameters.pl_GDP_DIR, pipeline().parameters.pl_GDP_PARTIAL_DIR, '=', \nsubstring(string(variables('MaxFolderDate')), 0, 4), '-',\nsubstring(string(variables('MaxFolderDate')), 4, 2), '-',\nsubstring(string(variables('MaxFolderDate')), 6, 2))"
+										}
+									}
+								],
+								"setSystemVariable": true
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Set GDP Latest path with Number Format",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "pipelineReturnValue",
+								"value": [
+									{
+										"key": "GDP_LATEST_PATH",
+										"value": {
+											"type": "Expression",
+											"content": "@concat(pipeline().parameters.pl_GDP_DIR, pipeline().parameters.pl_GDP_PARTIAL_DIR, '=', variables('MaxFolderDate'))"
+										}
+									}
+								],
+								"setSystemVariable": true
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"pl_GDP_DIR": {
+				"type": "string",
+				"defaultValue": "EBX_COUNTRY_LIST"
+			},
+			"pl_GDP_SUB_DIR": {
+				"type": "array"
+			},
+			"pl_GDP_PARTIAL_DIR": {
+				"type": "string",
+				"defaultValue": "EDL_LOAD_DT"
+			}
+		},
+		"variables": {
+			"FirstFolder": {
+				"type": "String"
+			},
+			"FoldersArray": {
+				"type": "Array"
+			},
+			"FolderIsNumberFormat": {
+				"type": "Boolean"
+			},
+			"FolderIntArray": {
+				"type": "Array"
+			},
+			"MaxFolderDate": {
+				"type": "Integer"
+			}
+		},
+		"folder": {
+			"name": "Pipeline"
+		},
+		"annotations": []
+	}
+}
