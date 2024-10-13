@@ -1,0 +1,841 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "df-dev-wwft"
+		},
+		"ls_AzureBlobStorage_source_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_AzureBlobStorage_source'"
+		},
+		"ls_Oracle_target_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_Oracle_target'",
+			"defaultValue": "host=@{linkedService().ls_TARGET_HOST};port=@{linkedService().ls_TARGET_PORT};sid=@{linkedService().ls_TARGET_SID};user id=@{linkedService().ls_TARGET_USER};Password=@{linkedService().ls_TARGET_PWD}"
+		},
+		"ls_AzureKeyVault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://kv-dev-wwft.vault.azure.net/"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/_SETTING_GDP_LATEST_PATH_')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Filter_Folders",
+						"type": "Filter",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.pl_GDP_SUB_DIR",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@and(\n    equals(item().type, 'Folder' )\n    ,\n    contains(item().name, concat(pipeline().parameters.pl_GDP_PARTIAL_DIR, '=' ))\n    )",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Folders into Array",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Filter_Folders",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "FoldersArray",
+							"value": {
+								"value": "@activity('Filter_Folders').output.value",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "First Folder",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Folders into Array",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "FirstFolder",
+							"value": {
+								"value": "@split(string(variables('FoldersArray')[0]), '=')[1]",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Folder Is Number Format",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "First Folder",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "FolderIsNumberFormat",
+							"value": {
+								"value": "@equals(variables('FirstFolder'), replace(variables('FirstFolder'), '-', '' ))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Loop To Get Int Array of Folders",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Filter_Folders",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Filter_Folders').output.value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Append all folders into an Array of Integer",
+									"type": "AppendVariable",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "FolderIntArray",
+										"value": {
+											"value": "@int(replace(replace(item().name, concat(pipeline().parameters.pl_GDP_PARTIAL_DIR, '='), '' ), '-', '' ))",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Max Folder Date",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Loop To Get Int Array of Folders",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "MaxFolderDate",
+							"value": {
+								"value": "@max(variables('FolderIntArray'))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "If Folder has Date In Number Format",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Folder Is Number Format",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Max Folder Date",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@variables('FolderIsNumberFormat')",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "Set latest GDP Path with date",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "pipelineReturnValue",
+										"value": [
+											{
+												"key": "GDP_LATEST_PATH",
+												"value": {
+													"type": "Expression",
+													"content": "@concat(pipeline().parameters.pl_GDP_DIR, pipeline().parameters.pl_GDP_PARTIAL_DIR, '=', \nsubstring(string(variables('MaxFolderDate')), 0, 4), '-',\nsubstring(string(variables('MaxFolderDate')), 4, 2), '-',\nsubstring(string(variables('MaxFolderDate')), 6, 2))"
+												}
+											}
+										],
+										"setSystemVariable": true
+									}
+								}
+							],
+							"ifTrueActivities": [
+								{
+									"name": "Set GDP Latest path with Number Format",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "pipelineReturnValue",
+										"value": [
+											{
+												"key": "GDP_LATEST_PATH",
+												"value": {
+													"type": "Expression",
+													"content": "@concat(pipeline().parameters.pl_GDP_DIR, pipeline().parameters.pl_GDP_PARTIAL_DIR, '=', variables('MaxFolderDate'))"
+												}
+											}
+										],
+										"setSystemVariable": true
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"pl_GDP_DIR": {
+						"type": "string",
+						"defaultValue": "EBX_COUNTRY_LIST"
+					},
+					"pl_GDP_SUB_DIR": {
+						"type": "array"
+					},
+					"pl_GDP_PARTIAL_DIR": {
+						"type": "string",
+						"defaultValue": "EDL_LOAD_DT"
+					}
+				},
+				"variables": {
+					"FirstFolder": {
+						"type": "String"
+					},
+					"FoldersArray": {
+						"type": "Array"
+					},
+					"FolderIsNumberFormat": {
+						"type": "Boolean"
+					},
+					"FolderIntArray": {
+						"type": "Array"
+					},
+					"MaxFolderDate": {
+						"type": "Integer"
+					}
+				},
+				"folder": {
+					"name": "Pipeline"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_AzuretoOracle')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "GET_GDP_FOLDERS",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ds_Azure_Source",
+								"type": "DatasetReference",
+								"parameters": {
+									"ds_CONTAINER_NAME": {
+										"value": "@pipeline().parameters.pl_CONTAINER_NAME",
+										"type": "Expression"
+									},
+									"ds_GDP_FILE_DIR": {
+										"value": "@pipeline().parameters.pl_GDP_DIR",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"childItems",
+								"itemType"
+							],
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "_SETTING_GDP_LATEST_PATH_",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "GET_GDP_FOLDERS",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "_SETTING_GDP_LATEST_PATH_",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pl_GDP_DIR": {
+									"value": "@pipeline().parameters.pl_GDP_DIR",
+									"type": "Expression"
+								},
+								"pl_GDP_SUB_DIR": {
+									"value": "@activity('GET_GDP_FOLDERS').output.childItems",
+									"type": "Expression"
+								},
+								"pl_GDP_PARTIAL_DIR": {
+									"value": "@pipeline().parameters.pl_GDP_PARTIAL_DIR",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "AzuretoOracle",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "_SETTING_GDP_LATEST_PATH_",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"wildcardFolderPath": {
+										"value": "@activity('_SETTING_GDP_LATEST_PATH_').output.pipelineReturnValue.GDP_LATEST_PATH",
+										"type": "Expression"
+									},
+									"wildcardFileName": "*.csv",
+									"enablePartitionDiscovery": true,
+									"partitionRootPath": {
+										"value": "@concat(pipeline().parameters.pl_CONTAINER_NAME, pipeline().parameters.pl_GDP_DIR)",
+										"type": "Expression"
+									}
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "OracleSink",
+								"writeBatchSize": 10000
+							},
+							"enableStaging": false,
+							"translator": {
+								"value": "@json(string(pipeline().parameters.pl_AZURE_TO_ORACLE_MAPPING))",
+								"type": "Expression"
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Azure_Source",
+								"type": "DatasetReference",
+								"parameters": {
+									"ds_CONTAINER_NAME": {
+										"value": "@pipeline().parameters.pl_CONTAINER_NAME",
+										"type": "Expression"
+									},
+									"ds_GDP_FILE_DIR": {
+										"value": "@pipeline().parameters.pl_GDP_DIR",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_Oracle_Target",
+								"type": "DatasetReference",
+								"parameters": {
+									"ds_TARGET_SCHEMA": "WWFT_DEV",
+									"ds_TARGET_TABLE": "CUSTOMERS",
+									"ds_TARGET_SID": "orcl",
+									"ds_TARGET_USER": "WWFT_DEV",
+									"ds_TARGET_PWD": "oracle123",
+									"ds_TARGET_HOST": "localhost",
+									"ds_TARGET_PORT": "1521"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"pl_CONTAINER_NAME": {
+						"type": "string",
+						"defaultValue": "dev-source-data/"
+					},
+					"pl_GDP_DIR": {
+						"type": "string",
+						"defaultValue": "EBX_COUNTRY_LIST/data/"
+					},
+					"pl_GDP_PARTIAL_DIR": {
+						"type": "string",
+						"defaultValue": "EDL_LOAD_DT"
+					},
+					"pl_AZURE_TO_ORACLE_MAPPING": {
+						"type": "string",
+						"defaultValue": {
+							"mappings": [
+								{
+									"sink": {
+										"name": "Customer_Index",
+										"type": "Decimal"
+									},
+									"source": {
+										"name": "Customer_Index",
+										"physicalType": "Decimal",
+										"precision": 38,
+										"scale": 18,
+										"type": "Decimal"
+									}
+								},
+								{
+									"sink": {
+										"name": "Customer_Id",
+										"type": "String"
+									},
+									"source": {
+										"name": "Customer_Id",
+										"physicalType": "UTF8",
+										"type": "String"
+									}
+								},
+								{
+									"sink": {
+										"name": "First_Name",
+										"type": "String"
+									},
+									"source": {
+										"name": "First_Name",
+										"physicalType": "UTF8",
+										"type": "String"
+									}
+								},
+								{
+									"sink": {
+										"name": "Last_Name",
+										"type": "String"
+									},
+									"source": {
+										"name": "Last_Name",
+										"physicalType": "UTF8",
+										"type": "String"
+									}
+								},
+								{
+									"sink": {
+										"name": "Company",
+										"type": "String"
+									},
+									"source": {
+										"name": "Company",
+										"physicalType": "UTF8",
+										"type": "String"
+									}
+								},
+								{
+									"sink": {
+										"name": "City",
+										"type": "String"
+									},
+									"source": {
+										"name": "City",
+										"physicalType": "UTF8",
+										"type": "String"
+									}
+								},
+								{
+									"sink": {
+										"name": "Country",
+										"type": "String"
+									},
+									"source": {
+										"name": "Country",
+										"physicalType": "UTF8",
+										"type": "String"
+									}
+								},
+								{
+									"sink": {
+										"name": "Phone_1",
+										"type": "String"
+									},
+									"source": {
+										"name": "Phone_1",
+										"physicalType": "UTF8",
+										"type": "String"
+									}
+								},
+								{
+									"sink": {
+										"name": "Phone_2",
+										"type": "String"
+									},
+									"source": {
+										"name": "Phone_2",
+										"physicalType": "UTF8",
+										"type": "String"
+									}
+								},
+								{
+									"sink": {
+										"name": "Email",
+										"type": "String"
+									},
+									"source": {
+										"name": "Email",
+										"physicalType": "UTF8",
+										"type": "String"
+									}
+								},
+								{
+									"sink": {
+										"name": "Subscription_Date",
+										"type": "DateTime"
+									},
+									"source": {
+										"name": "Subscription_Date",
+										"physicalType": "INT96",
+										"type": "DateTime"
+									}
+								},
+								{
+									"sink": {
+										"name": "Website",
+										"type": "String"
+									},
+									"source": {
+										"name": "Website",
+										"physicalType": "UTF8",
+										"type": "String"
+									}
+								}
+							],
+							"type": "TabularTranslator"
+						}
+					}
+				},
+				"folder": {
+					"name": "Pipeline"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_Azure_Source')]",
+				"[concat(variables('factoryId'), '/pipelines/_SETTING_GDP_LATEST_PATH_')]",
+				"[concat(variables('factoryId'), '/datasets/ds_Oracle_Target')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_Azure_Source')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_AzureBlobStorage_source",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"ds_CONTAINER_NAME": {
+						"type": "String",
+						"defaultValue": "dev-source-data"
+					},
+					"ds_GDP_FILE_DIR": {
+						"type": "String",
+						"defaultValue": "EBX_COUNTRY_LIST"
+					}
+				},
+				"folder": {
+					"name": "Dataset"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": {
+							"value": "@dataset().ds_GDP_FILE_DIR",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@dataset().ds_CONTAINER_NAME",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_AzureBlobStorage_source')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_Oracle_Target')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_Oracle_target",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"ls_TARGET_HOST": {
+							"value": "@dataset().ds_TARGET_HOST",
+							"type": "Expression"
+						},
+						"ls_TARGET_PORT": {
+							"value": "@dataset().ds_TARGET_PORT",
+							"type": "Expression"
+						},
+						"ls_TARGET_SID": {
+							"value": "@dataset().ds_TARGET_SID",
+							"type": "Expression"
+						},
+						"ls_TARGET_USER": {
+							"value": "@dataset().ds_TARGET_USER",
+							"type": "Expression"
+						},
+						"ls_TARGET_PWD": {
+							"value": "@dataset().ds_TARGET_PWD",
+							"type": "Expression"
+						}
+					}
+				},
+				"parameters": {
+					"ds_TARGET_SCHEMA": {
+						"type": "String",
+						"defaultValue": "WWFT_DEV"
+					},
+					"ds_TARGET_TABLE": {
+						"type": "String",
+						"defaultValue": "CUSTOMERS"
+					},
+					"ds_TARGET_SID": {
+						"type": "string",
+						"defaultValue": "orcl"
+					},
+					"ds_TARGET_USER": {
+						"type": "string",
+						"defaultValue": "WWFT_DEV"
+					},
+					"ds_TARGET_PWD": {
+						"type": "string",
+						"defaultValue": "oracle123"
+					},
+					"ds_TARGET_HOST": {
+						"type": "string",
+						"defaultValue": "localhost"
+					},
+					"ds_TARGET_PORT": {
+						"type": "string",
+						"defaultValue": "1521"
+					}
+				},
+				"folder": {
+					"name": "Dataset"
+				},
+				"annotations": [],
+				"type": "OracleTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().ds_TARGET_SCHEMA",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().ds_TARGET_TABLE",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_Oracle_target')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_AzureBlobStorage_source')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('ls_AzureBlobStorage_source_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_AzureKeyVault')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('ls_AzureKeyVault_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_Oracle_target')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"ls_TARGET_HOST": {
+						"type": "String",
+						"defaultValue": "localhost"
+					},
+					"ls_TARGET_PORT": {
+						"type": "String",
+						"defaultValue": "1521"
+					},
+					"ls_TARGET_SID": {
+						"type": "String",
+						"defaultValue": "orcl"
+					},
+					"ls_TARGET_USER": {
+						"type": "String",
+						"defaultValue": "WWFT_DEV"
+					},
+					"ls_TARGET_PWD": {
+						"type": "String",
+						"defaultValue": "oracle123"
+					}
+				},
+				"annotations": [],
+				"type": "Oracle",
+				"typeProperties": {
+					"connectionString": "[parameters('ls_Oracle_target_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "IR-selfhosted-wwft-dev",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/IR-selfhosted-wwft-dev')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/IR-selfhosted-wwft-dev')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		}
+	]
+}
