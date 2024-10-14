@@ -69,7 +69,7 @@
 							"value": "Prod",
 							"activities": [
 								{
-									"name": "Set variable1",
+									"name": "Set Prod Env",
 									"type": "SetVariable",
 									"dependsOn": [],
 									"policy": {
