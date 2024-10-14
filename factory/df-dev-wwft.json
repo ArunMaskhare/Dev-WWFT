@@ -25,6 +25,10 @@
 			"Prod_Host": {
 				"type": "string",
 				"value": "localhost"
+			},
+			"Prod_Port": {
+				"type": "string",
+				"value": "1521"
 			}
 		}
 	},
