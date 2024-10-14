@@ -27,31 +27,36 @@
 											{
 												"key": "Host",
 												"value": {
-													"type": "Expression"
+													"type": "Expression",
+													"content": "@pipeline().globalParameters.Dev_Host"
 												}
 											},
 											{
 												"key": "Service",
 												"value": {
-													"type": "Expression"
+													"type": "Expression",
+													"content": "@pipeline().globalParameters.Dev_SID"
 												}
 											},
 											{
 												"key": "User",
 												"value": {
-													"type": "Expression"
+													"type": "Expression",
+													"content": "@pipeline().globalParameters.Dev_User"
 												}
 											},
 											{
 												"key": "Pwd",
 												"value": {
-													"type": "Expression"
+													"type": "Expression",
+													"content": "@pipeline().globalParameters.Dev_Pwd"
 												}
 											},
 											{
 												"key": "Port",
 												"value": {
-													"type": "Expression"
+													"type": "Expression",
+													"content": "@pipeline().globalParameters.Dev_Port"
 												}
 											}
 										],
