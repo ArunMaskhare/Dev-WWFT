@@ -17,6 +17,10 @@
 			"Dev_Pwd": {
 				"type": "string",
 				"value": "oracle123"
+			},
+			"Dev_SID": {
+				"type": "string",
+				"value": "orcl"
 			}
 		}
 	},
