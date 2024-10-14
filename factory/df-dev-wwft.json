@@ -13,6 +13,10 @@
 			"Dev_User": {
 				"type": "string",
 				"value": "WWFT_DEV"
+			},
+			"Dev_Pwd": {
+				"type": "string",
+				"value": "oracle123"
 			}
 		}
 	},
