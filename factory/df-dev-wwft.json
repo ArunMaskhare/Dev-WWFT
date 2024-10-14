@@ -1,5 +1,13 @@
 {
 	"name": "df-dev-wwft",
+	"properties": {
+		"globalParameters": {
+			"Dev_Host": {
+				"type": "string",
+				"value": "localhost"
+			}
+		}
+	},
 	"location": "eastus",
 	"identity": {
 		"type": "SystemAssigned",
