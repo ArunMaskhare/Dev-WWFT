@@ -33,6 +33,10 @@
 			"Prod_User": {
 				"type": "string",
 				"value": "WWFT_DEV"
+			},
+			"Prod_Pwd": {
+				"type": "string",
+				"value": "oracle123"
 			}
 		}
 	},
