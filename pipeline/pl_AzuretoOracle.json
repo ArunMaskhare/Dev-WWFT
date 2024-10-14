@@ -188,7 +188,13 @@
 						"referenceName": "_SETTING_DMK_ENVIRONMENT_",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"DMK_ENVIRONMENT": {
+							"value": "@pipeline().parameters.DMK_ENVIRONMENT",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],
