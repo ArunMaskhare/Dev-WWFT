@@ -25,19 +25,34 @@
 										"variableName": "pipelineReturnValue",
 										"value": [
 											{
-												"key": "Host"
+												"key": "Host",
+												"value": {
+													"type": "Expression"
+												}
 											},
 											{
-												"key": "Service"
+												"key": "Service",
+												"value": {
+													"type": "Expression"
+												}
 											},
 											{
-												"key": "User"
+												"key": "User",
+												"value": {
+													"type": "Expression"
+												}
 											},
 											{
-												"key": "Pwd"
+												"key": "Pwd",
+												"value": {
+													"type": "Expression"
+												}
 											},
 											{
-												"key": "Port"
+												"key": "Port",
+												"value": {
+													"type": "Expression"
+												}
 											}
 										],
 										"setSystemVariable": true
