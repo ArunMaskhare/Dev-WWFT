@@ -1,6 +1,22 @@
 {
 	"name": "_SETTING_DMK_ENVIRONMENT_",
 	"properties": {
+		"activities": [
+			{
+				"name": "Set Target Environment",
+				"type": "Switch",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"cases": []
+				}
+			}
+		],
+		"parameters": {
+			"DMK_ENVIRONMENT": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "Pipeline"
 		},
