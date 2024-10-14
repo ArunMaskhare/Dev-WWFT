@@ -5,6 +5,10 @@
 			"Dev_Host": {
 				"type": "string",
 				"value": "localhost"
+			},
+			"Dev_Port": {
+				"type": "string",
+				"value": "1521"
 			}
 		}
 	},
