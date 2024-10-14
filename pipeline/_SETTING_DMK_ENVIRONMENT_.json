@@ -3,12 +3,52 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Set Target Environment",
+				"name": "Switch1",
 				"type": "Switch",
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
-					"cases": []
+					"cases": [
+						{
+							"value": "Case1",
+							"activities": [
+								{
+									"name": "Set Dev Target",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "pipelineReturnValue",
+										"value": [
+											{
+												"key": "Host"
+											},
+											{
+												"key": "Service"
+											},
+											{
+												"key": "User"
+											},
+											{
+												"key": "Pwd"
+											},
+											{
+												"key": "Port"
+											}
+										],
+										"setSystemVariable": true
+									}
+								}
+							]
+						},
+						{
+							"value": "Case2"
+						}
+					]
 				}
 			}
 		],
