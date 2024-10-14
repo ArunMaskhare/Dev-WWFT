@@ -21,6 +21,10 @@
 			"Dev_SID": {
 				"type": "string",
 				"value": "orcl"
+			},
+			"Prod_Host": {
+				"type": "string",
+				"value": "localhost"
 			}
 		}
 	},
