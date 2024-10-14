@@ -37,6 +37,10 @@
 			"Prod_Pwd": {
 				"type": "string",
 				"value": "oracle123"
+			},
+			"Prod_SID": {
+				"type": "string",
+				"value": "orcl"
 			}
 		}
 	},
