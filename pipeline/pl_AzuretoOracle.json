@@ -191,7 +191,7 @@
 					"waitOnCompletion": true,
 					"parameters": {
 						"DMK_ENVIRONMENT": {
-							"value": "@pipeline().parameters.DMK_ENVIRONMENT",
+							"value": "@pipeline().parameters.pl_DMK_ENVIRONMENT",
 							"type": "Expression"
 						}
 					}
