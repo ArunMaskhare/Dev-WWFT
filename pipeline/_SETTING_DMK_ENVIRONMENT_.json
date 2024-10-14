@@ -69,14 +69,55 @@
 							"value": "Prod",
 							"activities": [
 								{
-									"name": "Set Prod Env",
+									"name": "Set Prod",
 									"type": "SetVariable",
 									"dependsOn": [],
 									"policy": {
 										"secureOutput": false,
 										"secureInput": false
 									},
-									"userProperties": []
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "pipelineReturnValue",
+										"value": [
+											{
+												"key": "Prod_Host",
+												"value": {
+													"type": "Expression",
+													"content": "@pipeline().globalParameters.Prod_Host"
+												}
+											},
+											{
+												"key": "Prod_Port",
+												"value": {
+													"type": "Expression",
+													"content": "@pipeline().globalParameters.Prod_Port"
+												}
+											},
+											{
+												"key": "Prod_SID",
+												"value": {
+													"type": "Expression",
+													"content": "@pipeline().globalParameters.Prod_SID"
+												}
+											},
+											{
+												"key": "Prod_User",
+												"value": {
+													"type": "Expression",
+													"content": "@pipeline().globalParameters.Prod_User"
+												}
+											},
+											{
+												"key": "Prod_Pwd",
+												"value": {
+													"type": "Expression",
+													"content": "@pipeline().globalParameters.Prod_Pwd"
+												}
+											}
+										],
+										"setSystemVariable": true
+									}
 								}
 							]
 						}
