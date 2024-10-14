@@ -161,6 +161,29 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "_SETTING_DMK_ENVIRONMENT_",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "GET_GDP_FOLDERS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "_SETTING_DMK_ENVIRONMENT_",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
 			}
 		],
 		"parameters": {
