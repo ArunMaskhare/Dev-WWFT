@@ -8,6 +8,10 @@
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
+					"on": {
+						"value": "@pipeline().parameters.DMK_ENVIRONMENT",
+						"type": "Expression"
+					},
 					"cases": [
 						{
 							"value": "Dev",
