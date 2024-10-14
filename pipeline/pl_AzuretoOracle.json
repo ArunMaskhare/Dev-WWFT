@@ -353,7 +353,7 @@
 					"type": "TabularTranslator"
 				}
 			},
-			"DMK_ENVIRONMENT": {
+			"pl_DMK_ENVIRONMENT": {
 				"type": "string"
 			}
 		},
