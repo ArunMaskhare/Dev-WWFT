@@ -317,6 +317,9 @@
 					],
 					"type": "TabularTranslator"
 				}
+			},
+			"DMK_ENVIRONMENT": {
+				"type": "string"
 			}
 		},
 		"folder": {
