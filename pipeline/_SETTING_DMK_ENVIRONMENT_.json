@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Set Prod Target",
+				"name": "Set Target Env",
 				"type": "Switch",
 				"dependsOn": [],
 				"userProperties": [],
@@ -69,7 +69,7 @@
 							"value": "Prod",
 							"activities": [
 								{
-									"name": "Set Prod",
+									"name": "Set Prod Target",
 									"type": "SetVariable",
 									"dependsOn": [],
 									"policy": {
