@@ -29,6 +29,10 @@
 			"Prod_Port": {
 				"type": "string",
 				"value": "1521"
+			},
+			"Prod_User": {
+				"type": "string",
+				"value": "WWFT_DEV"
 			}
 		}
 	},
